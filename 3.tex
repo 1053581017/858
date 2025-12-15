@@ -1,0 +1,509 @@
+\chapter{连续时间信号与系统的傅里叶分析}
+
+% =========================================================
+%  NEW INSERTION: 傅里叶级数系数求解方法
+% =========================================================
+
+% ==========================================
+% 1. 定义法
+% ==========================================
+\section{定义法 (Direct Definition)}
+\begin{corebox}{核心思想}
+    \[ \ak = \frac{1}{T} \int_{T} x(t) e^{-jk\wo t} \dd t \]
+    \textbf{适用}：简单函数（常数、单项式）。
+\end{corebox}
+
+\begin{examplebox}{例 1：周期矩形脉冲}
+    $x(t)=1$ for $|t|<T_1$ within $T$.
+    \[ \ak = \frac{2\sin(k\wo T_1)}{k\wo T} = \boxed{\frac{\sin(k\wo T_1)}{k\pi}} \]
+    \small{注：$k=0$ 时需利用洛必达法则求极限，或直接求面积得 $a_0 = 2T_1/T$ (占空比)。}
+\end{examplebox}
+
+% ==========================================
+% 2. 微分冲激法
+% ==========================================
+\section{微分冲激法 (Differentiation)}
+\begin{corebox}{原理}
+    利用 $x^{(n)}(t) \FT (jk\wo)^n \ak$，将折线求导变冲激。
+\end{corebox}
+
+\begin{examplebox}{例 2：周期三角波}
+    二次求导得冲激序列 $c_k = \frac{1}{T}(2\cos(k\wo)-2)$。
+    \[ \ak = \frac{c_k}{(jk\wo)^2} = \boxed{\frac{2(1-\cos(k\frac{\pi}{2}))}{k^2\pi^2}} \]
+\end{examplebox}
+
+% 专门强调 a0 陷阱
+\begin{alertbox}{⚠️ 致命陷阱：直流分量丢失}
+    \textbf{现象}：微分法求出的 $\ak$ 在 $k=0$ 时分母为 0，公式失效。
+    \\ \textbf{物理本质}：求导操作只关注变化率，抹除了信号的“基础海拔”(直流分量)。
+    \\ \textbf{对策}：必须回到原图，通过积分计算平均值 $\displaystyle a_0 = \frac{1}{T} \int_T x(t) \dd t$。
+\end{alertbox}
+
+
+% ==========================================
+% 3. 关系式法
+% ==========================================
+\section{关系式法 (Relation to FT)}
+\begin{corebox}{公式}
+    \[ \ak = \frac{1}{T} X_{0}(jk\wo) \]
+    其中 $X_0(\jw)$ 是单周期截断信号的 FT。
+    \\ \textbf{物理意义}：周期信号的 $a_k$ 是单周期脉冲频谱的\textbf{采样}。
+\end{corebox}
+
+\begin{examplebox}{例 3：周期单边指数信号}
+    $x(t) = e^{-t} (0<t<T)$。求得 $X_0(\jw)$ 后代入关系式：
+    \[ \boxed{\ak = \frac{1 - e^{-T}}{T(1 + jk\wo)}} \]
+\end{examplebox}
+
+% ==========================================
+% 4. 等价法
+% ==========================================
+\section{等价法 (Convolution)}
+\begin{corebox}{公式}
+    \[ x(t) = \sum x_0(t-kT) \implies \ak = \frac{1}{T} X_0(jk\wo) \]
+    本质同方法 3，但物理图景是“卷积”。适用于无限长信号的叠加。
+\end{corebox}
+% ==========================================
+%  NEW SECTION: 周期信号的傅里叶变换
+% ==========================================
+\subsection{周期信号的傅里叶变换 (FT of Periodic Signals)}
+\begin{corebox}{核心公式}
+    对于周期为 $T$、基波频率为 $\wo = \frac{2\pi}{T}$ 的周期信号 $x(t)$，其傅里叶变换由一系列冲激函数组成：
+    \[ X(j\omega) = \sum_{k=-\infty}^{\infty} 2\pi \ak \delta(\omega - k\wo) \]
+    \textbf{物理意义}：
+    \begin{itemize}
+        \item 周期信号的频谱在频域是\textbf{离散}的。
+        \item 能量集中在谐波频率 $k\wo$ 处。
+        \item 每个冲激的强度（面积）是其傅里叶级数系数 $\ak$ 的 $2\pi$ 倍。
+    \end{itemize}
+\end{corebox}
+
+\begin{examplebox}{推导思路}
+    利用傅里叶级数展开式 $x(t) = \sum_{k=-\infty}^{\infty} \ak e^{jk\wo t}$，并结合复指数信号的变换对 $e^{j\omega_c t} \FT 2\pi\delta(\omega-\omega_c)$，利用线性性质逐项求和即可得证。
+\end{examplebox}
+\begin{examplebox}{例 4：重温 4-17(j)}
+    $x(t) = \sum e^{-|t-2n|}$ (周期 $T=2$)。
+    \[ \ak = \frac{1}{2} X_0(jk\pi) = \boxed{\frac{1}{1 + k^2\pi^2}} \]
+\end{examplebox}
+
+
+% ==========================================
+% 5. 考场救命补丁 (核心精华)
+% ==========================================
+\section{⚡ 考场救命补丁 (Essential Checklists)}
+\textit{算完 $a_k$ 后，利用以下直觉快速验算，防止低级错误！}
+
+% --- 建议 1 ---
+\subsection*{1. 对称性速查 (Symmetry Check)}
+
+\begin{alertbox}{不计算直接预判虚实性}
+    \begin{itemize}
+        \item $x(t)$ \textbf{实偶} $\implies \ak$ 必为 \textbf{实偶}。
+        \item $x(t)$ \textbf{实奇} $\implies \ak$ 必为 \textbf{纯虚奇}。
+        \item $x(t)$ \textbf{半波对称} ($x(t \pm T/2) = -x(t)$) $\implies$ \textbf{偶次谐波 $a_{2k}=0$}。
+    \end{itemize}
+\end{alertbox}
+
+\begin{bookbox}{}
+    \textbf{对应习题：Problem 3.21 ("连连看")}
+    \\ 题目给出 6 个波形和 6 组性质，要求\textbf{不计算}直接配对。专门训练“一眼定虚实”的直觉。
+\end{bookbox}
+
+% --- 建议 2 ---
+\subsection*{2. 收敛性判据 (Decay Rate)}
+
+\begin{alertbox}{看分母阶数知对错}
+    \begin{itemize}
+        \item 信号有\textbf{跳变} (如方波) $\implies |\ak| \propto \frac{1}{k}$
+        \item 信号连续但\textbf{折角} (如三角波) $\implies |\ak| \propto \frac{1}{k^2}$
+        \item 信号 $n$ 阶导数才不连续 $\implies |\ak| \propto \frac{1}{k^{n+2}}$
+    \end{itemize}
+\end{alertbox}
+
+\begin{bookbox}{}
+    \textbf{对应习题：Problem 3.16}
+    \\ 给出三个不同光滑度的波形（矩形、三角、抛物线），要求连线对应的衰减速率 ($1/k, 1/k^2$)。
+\end{bookbox}
+
+% --- 建议 3 ---
+\subsection*{3. 功率守恒 (Parseval's Relation)}
+
+\begin{alertbox}{必考公式}
+    \[ P_{avg} = \frac{1}{T} \int_T |x(t)|^2 \dd t = \sum_{k=-\infty}^{\infty} |\ak|^2 \]
+    \textbf{注意}：这是检查 $a_k$ 幅度是否合理的最终防线。
+\end{alertbox}
+
+\newpage
+
+% =========================================================
+%  ORIGINAL CONTENT
+% =========================================================
+
+\section{帕斯瓦尔定理}
+\subsection{能量公式（针对能量信号 / 非周期信号）}
+
+这是帕斯瓦尔定理在\textbf{傅里叶变换（FT）}体系下的形式，通常用于能量有限的非周期信号。
+
+\begin{itemize}
+    \item \textbf{物理意义}：信号在时域的总能量等于其在频域的总能量（能量守恒）。
+    \item \textbf{数学公式}：
+    \begin{itemize}
+        \item 使用角频率 $\omega$：
+        \begin{equation*}
+            \int_{-\infty}^{\infty} |x(t)|^2 dt = \frac{1}{2\pi} \int_{-\infty}^{\infty} |X(\omega)|^2 d\omega
+        \end{equation*}
+        \item 使用频率 $f$ (Hz)：
+        \begin{equation*}
+            \int_{-\infty}^{\infty} |x(t)|^2 dt = \int_{-\infty}^{\infty} |X(f)|^2 df
+        \end{equation*}
+    \end{itemize}
+    \item \textbf{别名}：此公式有时也被称为 \textbf{瑞利能量定理 (Rayleigh's Energy Theorem)}。
+\end{itemize}
+
+
+\subsection{功率公式（针对功率信号 / 周期信号）}
+
+这是帕斯瓦尔定理在\textbf{傅里叶级数（FS）}体系下的形式，适用于功率有限的周期信号。
+
+\begin{itemize}
+    \item \textbf{物理意义}：周期信号在时域的平均功率等于其频域各次谐波分量的功率之和。
+    \item \textbf{数学公式}：
+    \begin{equation*}
+        \frac{1}{T} \int_{T} |x(t)|^2 dt = \sum_{k=-\infty}^{\infty} |a_k|^2
+    \end{equation*}
+    \item \textbf{参数说明}：
+    \begin{itemize}
+        \item $T$：信号周期。
+        \item $a_k$：傅里叶级数系数（复指数形式）。
+        \item 结论：时域的平均功率 = 各次谐波幅度的平方和。
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{ 广义帕斯瓦尔公式（乘积形式）}
+
+这是帕斯瓦尔定理的\textbf{一般化形式}，描述了两个不同信号在时域的内积与频域内积的关系。
+
+\subsubsection*{A. 公式定义}
+\begin{equation*}
+    \int_{-\infty}^{+\infty} f(t)g(t)dt = \frac{1}{2\pi}\int_{-\infty}^{+\infty} F(-\omega)G(\omega)d\omega = \frac{1}{2\pi}\int_{-\infty}^{+\infty} F(\omega)G(-\omega)d\omega
+\end{equation*}
+
+\subsection*{B. 数学推导逻辑（基于频域卷积定理）}
+
+\begin{enumerate}
+    \item \textbf{时频对应关系}：时域的乘积对应频域的卷积（带系数 $\frac{1}{2\pi}$）。
+    \begin{equation*}
+        f(t)g(t) \longleftrightarrow \frac{1}{2\pi} [F(\omega) * G(\omega)] = \frac{1}{2\pi} \int_{-\infty}^{+\infty} F(u)G(\omega-u) du
+    \end{equation*}
+    
+    \item \textbf{利用变换定义}：傅里叶变换定义为：
+    \begin{equation*}
+        \mathcal{F}\{x(t)\} = \int_{-\infty}^{+\infty} x(t)e^{-j\omega t} dt
+    \end{equation*}
+    
+    \item \textbf{取特值 $\omega = 0$}：
+    \begin{itemize}
+        \item 等式左边（时域）：令 $\omega=0$，即 $e^{-j0}=1$，变为时域积分 $\int_{-\infty}^{+\infty} f(t)g(t) dt$。
+        
+\item 等式右边（频域）：将 $\omega=0$ 代入卷积公式：
+        \begin{equation*}
+            = \frac{1}{2\pi} \int_{-\infty}^{+\infty} F(u)G(0-u) du = \frac{1}{2\pi} \int_{-\infty}^{+\infty} F(u)G(-u) du
+        \end{equation*}
+        \textit{(注：对应图片最右侧等式)}
+    \end{itemize}
+    
+    \item \textbf{变量代换}：令 $v = -u$（则 $du = -dv$），积分限互换抵消负号：
+    \begin{equation*}
+        = \frac{1}{2\pi} \int_{-\infty}^{+\infty} F(-v)G(v) dv
+    \end{equation*}
+    \textit{(注：对应图片中间等式)}
+\end{enumerate}
+
+\subsection*{C. 与能量公式的退化关系}
+\begin{itemize}
+    \item \textbf{设定条件}：令 $g(t) = f^*(t)$（即 $f(t)$ 的共轭），且假定 $f(t)$ 为实信号（即 $f^*(t)=f(t)$）。
+    \item \textbf{频域性质}：此时 $G(\omega) = F^*(-\omega)$。
+    \item \textbf{结果}：公式退化为标准的能量守恒形式：
+    \begin{equation*}
+        \int_{-\infty}^{+\infty} |f(t)|^2 dt = \frac{1}{2\pi} \int_{-\infty}^{+\infty} |F(\omega)|^2 d\omega
+    \end{equation*}
+\end{itemize}
+
+\section{常用信号的傅里叶变换及推导笔记}
+
+% --- 原来的 Section 变为 Subsection ---
+\subsection{单边指数信号 (Single-sided Exponential)}
+\textbf{定义：} $f(t) = e^{-at}u(t), \quad a > 0$
+
+\textbf{推导过程：}
+根据傅里叶变换的定义式 $F(\omega) = \int_{-\infty}^{\infty} f(t)e^{-j\omega t} dt$：
+\begin{align*}
+    F(\omega) &= \int_{0}^{\infty} e^{-at} e^{-j\omega t} dt \\
+    &= \int_{0}^{\infty} e^{-(a+j\omega)t} dt \\
+    &= \left[ \frac{-1}{a+j\omega} e^{-(a+j\omega)t} \right]_{0}^{\infty}
+\end{align*}
+由于 $a>0$，当 $t \to \infty$ 时，$e^{-at} \to 0$，故：
+\begin{equation}
+    F(\omega) = 0 - \left( \frac{-1}{a+j\omega} \cdot 1 \right) = \frac{1}{a+j\omega}
+\end{equation}
+
+\textbf{变换对：}
+\[ e^{-at}u(t) \longleftrightarrow \frac{1}{a+j\omega} \]
+
+\textbf{频谱特性：}
+\begin{itemize}
+    \item 幅度谱：$|F(\omega)| = \frac{1}{\sqrt{a^2 + \omega^2}}$
+    \item 相位谱：$\varphi(\omega) = -\arctan\left(\frac{\omega}{a}\right)$
+\end{itemize}
+
+\hrulefill
+
+\subsection{双边指数信号 (Double-sided Exponential)}
+\textbf{定义：} $f(t) = e^{-a|t|}, \quad a > 0$
+
+\textbf{推导过程：}
+利用积分区间的可加性，将积分分为 $t<0$ 和 $t>0$ 两部分：
+\begin{align*}
+    F(\omega) &= \int_{-\infty}^{\infty} e^{-a|t|} e^{-j\omega t} dt \\
+    &= \int_{-\infty}^{0} e^{at} e^{-j\omega t} dt + \int_{0}^{\infty} e^{-at} e^{-j\omega t} dt \\
+    &= \int_{-\infty}^{0} e^{(a-j\omega)t} dt + \frac{1}{a+j\omega} \quad \text{(引用单边结果)} \\
+    &= \left[ \frac{1}{a-j\omega} e^{(a-j\omega)t} \right]_{-\infty}^{0} + \frac{1}{a+j\omega} \\
+    &= \left( \frac{1}{a-j\omega} - 0 \right) + \frac{1}{a+j\omega} \\
+    &= \frac{1}{a-j\omega} + \frac{1}{a+j\omega} \\
+    &= \frac{a+j\omega + a-j\omega}{a^2 + \omega^2}
+\end{align*}
+
+\textbf{变换对：}
+\begin{equation}
+    e^{-a|t|} \longleftrightarrow \frac{2a}{a^2 + \omega^2}
+\end{equation}
+\textit{注：由于 $f(t)$ 是实偶函数，其频谱 $F(\omega)$ 也是实偶函数。}
+
+\hrulefill
+
+\subsection{矩形脉冲信号 (Rectangular Pulse / Gate Function)}
+\textbf{定义：} 
+\[ 
+g_\tau(t) = \begin{cases} 
+1, & |t| < \frac{\tau}{2} \\
+0, & |t| > \frac{\tau}{2}
+\end{cases} 
+\]
+
+\textbf{推导过程：}
+\begin{align*}
+    G_\tau(\omega) &= \int_{-\tau/2}^{\tau/2} 1 \cdot e^{-j\omega t} dt \\
+    &= \left[ \frac{-1}{j\omega} e^{-j\omega t} \right]_{-\tau/2}^{\tau/2} \\
+    &= \frac{-1}{j\omega} \left( e^{-j\omega \tau/2} - e^{j\omega \tau/2} \right) \\
+    &= \frac{1}{\omega} \cdot \frac{e^{j\omega \tau/2} - e^{-j\omega \tau/2}}{j} \\
+    &= \frac{2}{\omega} \sin\left(\frac{\omega \tau}{2}\right)
+\end{align*}
+引入抽样函数定义 $\text{Sa}(x) = \frac{\sin x}{x}$：
+\begin{align*}
+    G_\tau(\omega) &= \tau \cdot \frac{\sin(\frac{\omega \tau}{2})}{\frac{\omega \tau}{2}} \\
+    &= \tau \text{Sa}\left(\frac{\omega \tau}{2}\right)
+\end{align*}
+
+\textbf{变换对：}
+\[ g_\tau(t) \longleftrightarrow \tau \text{Sa}\left(\frac{\omega \tau}{2}\right) \]
+
+\hrulefill
+
+\subsection{单位冲激信号 (Unit Impulse)}
+\textbf{定义：} $\delta(t)$
+
+\textbf{推导过程：}
+利用冲激函数的\textbf{筛选性质}：
+\begin{align*}
+    F(\omega) &= \int_{-\infty}^{\infty} \delta(t) e^{-j\omega t} dt \\
+    &= e^{-j\omega t} \Big|_{t=0} \\
+    &= 1
+\end{align*}
+这表明单位冲激信号包含所有频率分量，且幅度相等。
+
+\textbf{变换对：}
+\[ \delta(t) \longleftrightarrow 1 \]
+
+\hrulefill
+
+\subsection{常数信号 (Constant Signal) 与 符号函数}
+
+% --- 原来的 Subsection 变为 Subsubsection ---
+\subsubsection{1. 常数信号 $f(t)=1$}
+由于 $1$ 不满足绝对可积条件，不能直接积分。利用傅里叶反变换或对偶性推导。
+已知 $\delta(t) \leftrightarrow 1$，根据对称性（对偶性）：
+\[ 1 \longleftrightarrow 2\pi \delta(-\omega) = 2\pi \delta(\omega) \]
+
+\subsubsection{2. 符号函数 $sgn(t)$}
+\[ sgn(t) = \begin{cases} 1, & t>0 \\ -1, & t<0 \end{cases} \]
+利用极限法 $sgn(t) = \lim_{a \to 0} (e^{-at}u(t) - e^{at}u(-t))$，可得：
+\[ sgn(t) \longleftrightarrow \frac{2}{j\omega} \]
+
+\subsubsection{3. 单位阶跃信号 $u(t)$}
+利用 $u(t) = \frac{1}{2} + \frac{1}{2}sgn(t)$：
+\[ u(t) \longleftrightarrow \pi \delta(\omega) + \frac{1}{j\omega} \]
+
+\hrulefill
+
+\subsection{Sinc 信号 (频域门函数)}
+\textbf{定义：} $f(t) = \frac{\sin(\omega_c t)}{\pi t}$
+
+\textbf{推导思路：}
+利用对偶性。已知频域为门函数 $G_{2\omega_c}(\omega)$ (宽度为 $2\omega_c$)：
+\[ F(\omega) = \begin{cases} 1, & |\omega| < \omega_c \\ 0, & \text{其他} \end{cases} \]
+其反变换为：
+\begin{align*}
+    f(t) &= \frac{1}{2\pi} \int_{-\omega_c}^{\omega_c} 1 \cdot e^{j\omega t} d\omega \\
+    &= \frac{1}{2\pi} \left[ \frac{1}{jt} e^{j\omega t} \right]_{-\omega_c}^{\omega_c} \\
+    &= \frac{1}{\pi t} \cdot \frac{e^{j\omega_c t} - e^{-j\omega_c t}}{2j} \\
+    &= \frac{\sin(\omega_c t)}{\pi t}
+\end{align*}
+
+\textbf{变换对：}
+\[ \frac{\sin(\omega_c t)}{\pi t} \longleftrightarrow \text{Gate}_{2\omega_c}(\omega) \]
+
+% ==========================================
+% 1. 基础变形类
+% ==========================================
+\section{基础变形类 (Basic Deformations)}
+\textit{此类性质涉及微积分与函数形状改变，会直接改变 $X(j\omega)$ 的函数形式。}
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.6} % 增加行高，让公式更舒展
+    \begin{tabularx}{\textwidth}{@{} l l L l @{}}
+        \toprule
+        \textbf{性质} & \textbf{时域} $x(t)$ & \textbf{频域} $X(j\omega)$ & \textbf{备注} \\
+        \midrule
+        线性 (Linearity) & $ax_1(t) + bx_2(t)$ & $aX_1(j\omega) + bX_2(j\omega)$ & 叠加原理 \\
+        时域微分 & $\frac{d}{dt}x(t)$ & $j\omega X(j\omega)$ & 高频增强 \\
+        % 使用 \displaystyle 让积分号显示为正常大小
+        时域积分 & $\int_{-\infty}^t x(\tau)d\tau$ & $\displaystyle \frac{1}{j\omega}X(j\omega) + \pi X(0)\delta(\omega)$ & 注意直流分量 \\
+        频域微分 & $tx(t)$ & $j\frac{d}{d\omega}X(j\omega)$ & 时域乘 $t$ \\
+        频域积分 & $-\frac{1}{jt}x(t) + \pi x(0)\delta(t)$ & $\displaystyle \int_{-\infty}^\omega X(j\eta)d\eta$ & 时域除 $t$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ==========================================
+% 2. 坐标变换类
+% ==========================================
+\section{坐标变换类 (Coordinate Transformations)}
+\textit{此类性质不改变 $X(j\omega)$ 的核心形状，只改变变量 $\omega$ 的位置或比例。}
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} l l L l @{}}
+        \toprule
+        \textbf{性质} & \textbf{时域} $x(t)$ & \textbf{频域} $X(j\omega)$ & \textbf{记忆要点} \\
+        \midrule
+       
+ 时移 (Time Shift) & $x(t-t_0)$ & $e^{-j\omega t_0}X(j\omega)$ & 幅度不变，相位线性变化 \\
+        频移 (Freq Shift) & $e^{j\omega_0 t}x(t)$ & $X(j(\omega-\omega_0))$ & 调制特性 (Modulation) \\
+        尺度变换 (Scaling) & $x(at)$ & $\frac{1}{|a|}X(j\frac{\omega}{a})$ & 时域压缩 $\FT$ 频域扩展 \\
+        时间反转 (Reversal) & $x(-t)$ & $X(-j\omega)$ & 若 $x(t)$ 为实数，则共轭 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ==========================================
+% 3. 共轭对称性
+% ==========================================
+\section{共轭对称性 (Conjugate Symmetry)}
+\textit{设 $x(t) \FT X(j\omega)$，且 $X(j\omega) = R(\omega) + jI(\omega)$。}
+
+\begin{table}[h!]
+    \centering
+    
+\renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{@{} l L L @{}}
+        \toprule
+        \textbf{信号 $x(t)$ 的特性} & \textbf{频谱 $X(j\omega)$ 的特性} & \textbf{数学表达} \\
+        \midrule
+        一般复信号 & 共轭对称 & $x^*(t) \FT X^*(-j\omega)$ \\
+        \textbf{实信号 (Real)} & \textbf{共轭对称} & $X(j\omega) = X^*(-j\omega)$ \\
+        & \small{(模偶，相奇，实部偶，虚部奇)} & \\
+        \textbf{实偶信号} & \textbf{实偶函数} & $X(j\omega) = R(\omega)$ \small{(纯实数，偶函数)} \\
+ 
+       \textbf{实奇信号} & \textbf{虚奇函数} & $X(j\omega) = jI(\omega)$ \small{(纯虚数，奇函数)} \\
+        实信号的偶部 & 对应频谱的\textbf{实部} & $\mathcal{Ev}\{x(t)\} \FT \mathcal{Re}\{X(j\omega)\}$ \\
+        实信号的奇部 & 对应频谱的\textbf{虚部} & $\mathcal{Od}\{x(t)\} \FT j\mathcal{Im}\{X(j\omega)\}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{tcolorbox}[title= 记忆口诀]
+实偶对实偶，实奇对虚奇；偶部对实部，奇部对虚部（注意虚部有个 $j$）。
+\end{tcolorbox}
+
+% ==========================================
+% 4. 交互运算类
+% ==========================================
+\section{交互运算类 (Interaction)}
+\textit{处理两个信号之间的关系，解题核心。}
+
+\begin{itemize}[leftmargin=1cm, itemsep=8pt]
+    \item \textbf{时域卷积 (Convolution)}: 解题神器，将卷积变乘法。
+    \[ x(t) * h(t) \FT X(j\omega)H(j\omega) \]
+    
+    \item \textbf{时域相乘 (Modulation)}: 通常用于调制或加窗。
+    \[ 
+x(t)p(t) \FT \frac{1}{2\pi} [X(j\omega) * P(j\omega)] \]
+    
+    \item \textbf{对偶性 (Duality)}: 解决 $t$ 域出现 Sinc 函数等难题。
+    \[ \boxed{X(t) \FT 2\pi x(-\omega)} \]
+    \textcolor{red}{\small (注：此处已修正原笔记中的符号错误)}
+\end{itemize}
+
+% ==========================================
+% 5. 解题策略
+% ==========================================
+\section*{ 解题策略：最优计算顺序 (The Algorithm)}
+\begin{tcolorbox}[colback=green!5!white, colframe=green!50!black]
+当遇到复杂信号求变换时，建议按照以下优先级进行拆解：
+\begin{enumerate}
+    \item \textbf{交互运算类} (先处理卷积或乘积)
+    \item \textbf{基础变形类} (处理微分、积分、乘 $t$)
+    \item \textbf{坐标变换类} (最后处理平移、尺度变换)
+\end{enumerate}
+\end{tcolorbox}
+
+% ==========================================
+% 6. 典型推导案例
+% ==========================================
+\section{典型推导案例：冲激串信号}
+
+\subsection{1. 标准周期冲激串}
+设 $p(t) = \sum_{k=-\infty}^{\infty} \delta(t - kT)$，其变换为：
+\[ P(j\omega) = \frac{2\pi}{T} \sum_{k=-\infty}^{\infty} \delta\left(\omega - k\frac{2\pi}{T}\right) \]
+
+\subsection{2. 正负交替冲激串 (推导示例)}
+\textbf{目标信号：} 周期 $T_0 = 2T$，在一个周期 $[0, 2T)$ 内包含：
+\begin{itemize}
+    \item $t=0$ 处：$+\delta(t)$
+    \item $t=T$ 处：$-\delta(t-T)$
+\end{itemize}
+
+\paragraph{Step 1: 求傅里叶级数系数 $a_k$}
+\[ a_k = \frac{1}{T_0} \int_{0}^{2T} [\delta(t) - \delta(t-T)] e^{-jk\omega_0 t} dt \]
+其中 $\omega_0 = \frac{2\pi}{2T} = \frac{\pi}{T}$。利用冲激函数的筛选性质：
+\begin{itemize}
+    \item 第一项 $\delta(t)$ 在 $t=0$ 处采样 $\rightarrow e^0 = 1$
+    \item 第二项 $-\delta(t-T)$ 在 $t=T$ 处采样 $\rightarrow -e^{-jk\frac{\pi}{T}(T)} = -(-1)^k$
+\end{itemize}
+得到系数表达式：
+\[ a_k = \frac{1}{2T} [1 - (-1)^k] \]
+\textbf{分析 $k$ 的奇偶性：}
+\begin{itemize}
+    \item 当 $k$ 为偶数：$1 - 1 = 0 \implies a_k = 0$
+    \item 当 $k$ 为奇数：$1 - (-1) = 
+2 \implies a_k = \frac{2}{2T} = \frac{1}{T}$
+\end{itemize}
+
+\paragraph{Step 2: 构建傅里叶变换 $Q(j\omega)$}
+代入周期信号 FT 通式 $Q(j\omega) = \sum 2\pi a_k \delta(\omega - k\omega_0)$，仅保留奇数项：
+\[ Q(j\omega) = \sum_{k=\text{odd}} 2\pi \left( \frac{1}{T} \right) \delta\left(\omega - k\frac{\pi}{T}\right) \]
+或者写成更紧凑的形式（令奇数 $k \rightarrow 2m+1$ 或直接保留 $k$）：
+\[ Q(j\omega) = \frac{2\pi}{T} \sum_{k=-\infty}^{\infty} \delta\left(\omega - (2k+1)\frac{\pi}{T}\right) \]

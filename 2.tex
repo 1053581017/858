@@ -1,0 +1,118 @@
+\chapter{线性时不变系统的时域分析}
+\section{线性时不变系统的主要特性}
+\subsection{记忆性 (Memory)}
+系统的记忆特性强调系统的响应是否仅与当前时刻的输入有关。\\
+$y(t)=Kx(t)$ 时即为无记忆。
+
+\subsection{因果性 (Causality)}
+系统的因果特性强调的是系统的响应是否与未来的输入有关。
+
+\subsection{可逆性 (Invertibility)}
+可逆系统由于其输入和响应间存在一一对应关系。
+
+\subsection{稳定性 (Stability)}
+有界的输入产生有界的响应。\\
+如果 $x(t)$ 前跟一个可以趋于无穷的 $t$（例如 $tx(t)$），则不稳定。
+
+\subsection{时不变性 (Time-Invariance)}
+将 $x(t)$ 中的 $t$ 替换为 $t - t_0$，与把方程中所有的 $t$ 都替换为 $t - t_0$ 相等的话，即为时不变。
+
+\subsection{线性 (Linearity)}
+若系统满足以下叠加原理，则为线性系统：
+\[
+T[a \cdot x_1(t) + b \cdot x_2(t)] = a \cdot y_1(t) + b \cdot y_2(t)
+\]
+即：输入信号的加权和产生的响应，等于各个输入信号单独产生的响应的加权和。
+
+\section{一阶 LTI 系统全响应}
+\begin{itemize}
+    \item \textbf{全响应 (Total Response)}：一个线性系统的全响应 = 零输入响应 + 零状态响应。
+    \item \textbf{零输入响应 ($y_{zi}(t)$)}：仅由系统的\textbf{初始状态}（储能）引起的响应，与外部输入无关。它的形式完全取决于系统的\textbf{特征根}（固有频率）。
+    \item \textbf{零状态响应 ($y_{zs}(t)$)}：仅由\textbf{外部输入} $x(t)$ 引起的响应，假设初始状态为零。通常通过卷积 $x(t) * h(t)$ 计算。
+\end{itemize}
+
+\section{�� 关键联系：冲激响应 $h(t)$ 与特征方程}
+
+在动手求解之前，理解 $h(t)$ 与微分方程的内在联系能极大地提高解题速度。
+
+对于一阶微分方程 $y'(t) + a y(t) = K x(t)$：
+
+\begin{enumerate}
+    \item \textbf{特征方程}：将微分项 $\frac{d}{dt}$ 替换为 $s$，得到 $s + a = 0$。
+    \item \textbf{特征根 (Natural Mode)}：解得 $\lambda = -a$。
+    \item \textbf{冲激响应 $h(t)$}：
+    \begin{itemize}
+        \item 物理上，$h(t)$ 是系统受冲激激发后的\textbf{自由振动}。
+        \item 数学上，其指数衰减项的系数\textbf{正是特征根}。
+        \item 形式为：$h(t) = K e^{\lambda t} u(t) = K e^{-at} u(t)$。
+    \end{itemize}
+\end{enumerate}
+
+\begin{center}
+    \textit{}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10!white, colframe=orange!85!black, title=⚡️ 秒杀技巧]
+只要看到 $h(t) = A \cdot e^{\mathbf{-3}t} u(t)$，立刻可以断定：
+\begin{enumerate}
+    \item 系统的特征根 $\lambda = \mathbf{-3}$。
+    \item 微分方程左边必然是 $y'(t) + \mathbf{3}y(t) = \dots$
+    \item 零输入响应 $y_{zi}(t)$ 的形式必然是 $C_{zi} e^{\mathbf{-3}t}$。
+\end{enumerate}
+\end{tcolorbox}
+
+\section{两种核心解法}
+
+\subsection{��️ 解法一：经典法 (Classical Method)}
+\textbf{适用场景}：纯数学计算，关注最终结果而非物理过程，或者求全解时。\\
+\textbf{核心公式}：全响应 = 齐次解 $y_h$ + 特解 $y_p$
+
+\begin{enumerate}
+    \item \textbf{求齐次解 ($y_h$)}：
+    \begin{itemize}
+        \item 令输入 $x(t)=0$，列出特征方程（如 $r+a=0$）。
+        \item 解出特征根 $\lambda$，写出形式 $y_h(t) = C \cdot e^{\lambda t}$。
+    \end{itemize}
+    
+    \item \textbf{求特解 ($y_p$)}：
+    \begin{itemize}
+        \item 观察输入 $x(t)$ 的形式（如 $e^{at}$, $\cos \omega t$）。
+        \item 设出同形式的待定特解，代入原微分方程求出系数。
+    \end{itemize}
+    
+    \item \textbf{合成并定常数}：
+    \begin{itemize}
+        \item 写出全解 $y(t) = C \cdot e^{\lambda t} + y_p(t)$。
+        \item 代入\textbf{总初值 $y(0^+)$} 解出常数 $C$。
+        \item \textit{注意：如果输入包含冲激函数 $\delta(t)$，需先分析 $y(0^-) \to y(0^+)$ 的跳变。}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{��️ 解法二：双零法 (Zero-Input / Zero-State)}
+\textbf{适用场景}：信号与系统分析，需分析“内部储能”与“外部激励”的独立贡献，或输入发生变化时。\\
+\textbf{核心公式}：全响应 = 零输入 $y_{zi}$ + 零状态 $y_{zs}$
+
+\begin{enumerate}
+    \item \textbf{求零输入响应 ($y_{zi}$)}：
+    \begin{itemize}
+        \item \textbf{条件}：输入 $x(t)=0$，仅有初值 $y(0^-)$。
+        \item \textbf{计算}：它就是齐次解。形式为 $y_{zi}(t) = C_{zi} e^{\lambda t}$。
+        \item \textbf{定常数}：直接代入 $y_{zi}(0) = y(0^-)$，解出 $C_{zi}$。
+        \item \textit{特性：只要初始状态不变，无论输入怎么变，这部分永远不变。}
+    \end{itemize}
+    
+    \item \textbf{求零状态响应 ($y_{zs}$)}：
+    \begin{itemize}
+        \item \textbf{条件}：初值 $y(0^-)=0$，仅有输入 $x(t)$。
+        \item \textbf{计算途径}：
+        \begin{itemize}
+            \item \textbf{卷积法}：$y_{zs}(t) = x(t) * h(t)$。
+            \item \textbf{微分方程法}：先求特解 $y_p$，然后凑一个齐次解 $C_{zs}e^{\lambda t}$，使得 $y_{zs}(0)=0$。
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{合成}：
+    \begin{itemize}
+        \item $y(t) = y_{zi}(t) + y_{zs}(t)$。
+    \end{itemize}
+\end{enumerate}

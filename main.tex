@@ -1,0 +1,61 @@
+\documentclass[cn,10pt,math=newtx,citestyle=gb7714-2015,bibstyle=gb7714-2015]{0-figure/elegantbook}
+
+% --- 基础宏包 ---
+\usepackage{CJKfntef}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{chemformula}
+\usepackage{svg}
+\usepackage{extarrows}
+\usepackage{bm}
+\usepackage{mathtools}
+
+% --- 表格与列表 ---
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+
+% --- 绘图 ---
+\usepackage{tikz-3dplot}
+\usetikzlibrary{cd}
+
+% --- 核心配置 (加载 newcommand.tex) ---
+% 注意：所有自定义命令、颜色、文本框定义都在这里
+\input{newcommand}
+
+% --- 封面设置 ---
+\cover{0-figure/cover.jpg}
+\logo{0-figure/science-and-mind.jpg}
+
+\title{LaTeX+Overleaf考研信号与系统}
+\author{小小叉车}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\frontmatter
+\tableofcontents
+\mainmatter
+
+% --- 正文章节 ---
+\input{1}
+\newpage
+
+\input{2}
+\newpage
+
+\input{3}
+\newpage
+
+\input{4}
+\newpage
+
+\input{5}
+\newpage
+
+\input{6}
+\newpage
+
+\printbibliography
+\end{document}

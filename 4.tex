@@ -1,0 +1,104 @@
+\chapter{滤波、调制和采样}
+
+% ==========================================
+% 第一部分：核心概念解析
+% ==========================================
+\section{核心概念解析：基带信号 vs. 频带信号}
+
+在信号处理和通信中，通常根据频谱在频率轴上的位置，将信号分为两大类：
+
+\subsection{1. 基带信号 (Baseband Signal)}
+\begin{itemize}
+    \item \textbf{定义}：频谱分量集中在\textbf{零频率（DC）}附近的信号。
+    \item \textbf{特征}：频带从 $0$ (或非常接近 $0$) 开始，延伸到某个最高频率 $f_{max}$。
+    \item \textbf{直观理解}：这是未经调制的原始信号。
+    \item \textbf{例如}：
+    \begin{itemize}
+        \item 你对着麦克风说话的声音（声波转换成的电信号）。
+        \item 上一题中的图像 (b)，频谱横跨 $[-W_2, W_2]$，中心就在 $0$。
+    \end{itemize}
+    \item \textbf{对应采样定理}：\textbf{奈奎斯特采样定理 (Nyquist Sampling Theorem)}。
+    \begin{itemize}
+        \item \textbf{公式}：$f_s \ge 2 f_{max}$。
+    \end{itemize}
+\end{itemize}
+
+\subsection{2. 频带信号 (Passband / Bandpass Signal)}
+\begin{itemize}
+    \item \textbf{定义}：频谱被搬移到较高频率处，且\textbf{不包含}零频率分量的信号。
+    \item \textbf{特征}：频带位于 $f_{min}$ 到 $f_{max}$ 之间，且 $f_{min} \gg 0$。
+    \begin{itemize}
+        \item \textbf{带宽}：$B = f_{max} - f_{min}$。
+    \end{itemize}
+    \item \textbf{直观理解}：这是经过调制后的信号，适合无线传输。
+    \item \textbf{例如}：
+    \begin{itemize}
+        \item 收音机接收的 FM/AM 广播信号。
+        \item Wi-Fi 信号。
+    \end{itemize}
+    \item \textbf{对应采样定理}：\textbf{带通采样定理 (Bandpass Sampling Theorem)}。
+    \begin{itemize}
+        \item \textbf{公式}：$f_s = \frac{2f_{max}}{m}$（其中 $m$ 是整数）。
+        \item \textit{注：这个公式仅适用于此类信号，不可混用。}
+    \end{itemize}
+\end{itemize}
+
+% ==========================================
+% 第二部分：带通采样定理
+% ==========================================
+\section{带通信号的采样定理（欠采样）}
+
+\begin{corebox}{核心问题}
+    对于一个频率范围为 $[f_L, f_H]$，带宽为 $B = f_H - f_L$ 的带通信号，为了避免混叠，采样频率 $f_s$ 必须使得信号频谱完整地“停”在第 $m$ 个奈奎斯特区间内。
+\end{corebox}
+
+\subsection{推导：停车位模型}
+我们将频谱比喻为一辆车，奈奎斯特区间比喻为停车位。第 $m$ 个区间的范围为：
+\[
+\text{下界} = (m-1)\frac{f_s}{2} \quad \text{至} \quad \text{上界} = m\frac{f_s}{2}
+\]
+为了让信号 $[f_L, f_H]$ （即整个“车”）停进这个“车位”里，必须同时满足两个条件：
+
+\begin{enumerate}
+    \item \textbf{条件 1：信号没超出上界（车头没越线）}
+    \[ f_H \le m\frac{f_s}{2} \implies \boldsymbol{f_s \ge \frac{2f_H}{m}} \]
+    这就是公式的下限。
+    
+    \item \textbf{条件 2：信号没超出下界（车尾没越线）}
+    \[ f_L \ge (m-1)\frac{f_s}{2} \implies \boldsymbol{f_s \le \frac{2f_L}{m-1}} \]
+    这就是公式的上限。
+\end{enumerate}
+
+\subsection{核心公式汇总}
+
+\begin{alertbox}{带通采样核心不等式}
+    合并上述两个条件，得到采样频率 $f_s$ 需满足：
+    \[ \boxed{ \frac{2f_H}{m} \le f_s \le \frac{2f_L}{m-1} } \]
+    其中，$m$ 是一个正整数，为了保证不等式有解（上限 $\ge$ 下限），其最大取值受限于带宽 $B$：
+    \[ m \le m_{max} = \left\lfloor \frac{f_H}{B} \right\rfloor \]
+    (注：$\lfloor \cdot \rfloor$ 表示向下取整)
+\end{alertbox}
+
+\subsection{详细计算步骤}
+
+\begin{examplebox}{解题算法流程}
+\begin{enumerate}
+    \item \textbf{确定参数}：找出信号的最高频率 $f_H$ 和最低频率 $f_L$，计算带宽 $B = f_H - f_L$。
+    
+    \item \textbf{计算 $m$ 的最大值}：
+    \[ m_{max} = \left\lfloor \frac{f_H}{B} \right\rfloor \]
+    这意味着你可以把频谱“折叠”多少次而不发生重叠。
+    
+    \item \textbf{寻找可行的采样区间}：
+    对于 $m = 1, 2, \dots, m_{max}$，分别代入核心不等式算出 $f_s$ 的允许范围：
+    \begin{itemize}
+        \item 当 $m=1$ 时（相当于基带采样）：$2f_H \le f_s < \infty$
+        \item 当 $m=m_{max}$ 时：通常能得到最低的允许采样频率范围。
+    \end{itemize}
+    
+    \item \textbf{确定最小采样频率}：
+    通常题目问的“最小采样频率”位于 $m = m_{max}$ 对应的区间的下限，即：
+    \[ f_{s,min} = \frac{2f_H}{m_{max}} \]
+    \small{注意：理论上的极限最小值是 $2B$，但只有当 $f_H$ 是 $B$ 的整数倍时，才能精确取到 $2B$。大多数情况下，$f_{s,min}$ 会略大于 $2B$。}
+\end{enumerate}
+\end{examplebox}
