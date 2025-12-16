@@ -44,6 +44,7 @@
     \end{tabularx}
 \end{table}
 \newpage
+
 % ==========================================
 % 第二部分：拉普拉斯变换性质表
 % ==========================================
@@ -75,6 +76,7 @@
     \end{tabularx}
 \end{table}
 \newpage
+
 % ==========================================
 % 第三部分：常用拉普拉斯变换对列表
 % ==========================================
@@ -89,10 +91,7 @@
 \begin{table}[h!]
     \centering
     \small
-    \renewcommand{\arraystretch}{2.0} % 增加行高以容纳分数
-    % 修改说明：
-    % 第2列和第3列改为 >{\centering\arraybackslash}X，平分剩余空间并居中
-    % 第4列改为 c，紧凑适应内容
+    \renewcommand{\arraystretch}{2.0}
     \begin{tabularx}{\textwidth}{c | >{\centering\arraybackslash}X | >{\centering\arraybackslash}X | c}
         \toprule
         \textbf{序号} & \textbf{信号} $x(t)$ & \textbf{变换} $X(s)$ & \textbf{收敛域} $\sigma$ \\
@@ -116,8 +115,139 @@
         \bottomrule
     \end{tabularx}
 \end{table}
-核心概念解析：几何法求频率响应我们要分析的是系统函数 $H(s)$ 在虚轴 $s=j\omega$ 上的模值 $|H(j\omega)|$。1. 几何直观对于 $H(s)$ 中的每一个因子：零点 (Zero, $\circ$)：代表分子。零点到 $j\omega$ 的距离越短，模值越小（拉低增益）。极点 (Pole, $\times$)：代表分母。极点到 $j\omega$ 的距离越短，模值越大（顶高增益，产生峰值）。2. 核心公式$$|H(j\omega)| = K \cdot \frac{\text{所有零点到 } j\omega \text{ 的矢量长度之积}}{\text{所有极点到 } j\omega \text{ 的矢量长度之积}}$$我们在 $j\omega$ 轴上从 $\omega=0$ 走到 $\omega=\infty$，观察这些“矢量长度”是如何变化的，就能画出幅频响应。�� 解题步骤拆解 (针对你上传的例题 7-10)我们依次分析图中的 (a), (b), (c) 三种情况。(a) 低通滤波器 (Low-Pass)系统函数：$H_1(s) = \frac{1}{(s+1)(s+3)}$零极点分布：零点：无（或者说在无穷远处）。极点：实轴上的 $-1$ 和 $-3$。几何分析：$\omega=0$ (直流)：参考点在原点。极点矢量长度分别为 1 和 3。模值最大，为 $\frac{1}{1\times3} = \frac{1}{3}$。$\omega \uparrow$ (频率增加)：参考点沿虚轴向上移动。极点到 $j\omega$ 的连线（图中 $V_1, V_2$）变长。$\omega \to \infty$：分母中的长度无限变大，导致 $|H(j\omega)| \to 0$。结论：低频大，高频小 $\Rightarrow$ 低通特性。(b) 带通滤波器 (Band-Pass)系统函数：$H_2(s) = \frac{s}{s^2+s+1}$零极点分布：零点：原点 $0$ 有一个零点。极点：共轭复极点 $-\frac{1}{2} \pm j\frac{\sqrt{3}}{2}$。几何分析：$\omega=0$：也就是正好踩在零点上。零点矢量长度为0，分子为0 $\Rightarrow$ 模值为0。$\omega$ 接近极点虚部：当 $\omega$ 走到 $\frac{\sqrt{3}}{2}$ 附近时，距离极点非常近（分母极小），同时距离零点有一定长度（分子不为0）。分母小意味着数值大 $\Rightarrow$ 出现峰值。$\omega \to \infty$：零点矢量长度随 $\omega$ 线性增长（分子），但两个极点矢量长度也随 $\omega$ 增长（分母是 $\omega^2$ 级别）。分母增长得比分子快 $\Rightarrow$ 模值趋向于0。结论：两头低，中间高 $\Rightarrow$ 带通特性。(c) 高通滤波器 (High-Pass)系统函数：$H_3(s) = \frac{s^2}{(s+1)^2}$零极点分布：零点：原点 $0$ 有二阶零点（两个零点重合）。极点：$-1$ 处有二阶极点。几何分析：$\omega=0$：踩在零点上，分子为0 $\Rightarrow$ 模值为0。$\omega \to \infty$：参考点在虚轴无穷远处。此时，零点到参考点的距离（$|\omega|$）和极点到参考点的距离（$\sqrt{1+\omega^2}$）几乎相等。极限比值：$\frac{\omega^2}{(\sqrt{1+\omega^2})^2} \approx 1$。结论：低频为0，高频通透 $\Rightarrow$ 高通特性。
-第一部分：为什么全通系统的零极点关于 $j\omega$ 轴对称？1. 什么是全通系统？全通系统（All-pass System）的定义是：幅度响应恒为常数。也就是说，无论输入信号频率 $\omega$ 是多少，经过系统后，幅度都不变（增益为1），只有相位会发生改变。数学表达：$|H(j\omega)| = C$ （通常归一化为1）。2. 几何直观（最透彻的理解法）我们在复平面上计算 $|H(j\omega)|$ 时，其实是在计算距离的比值：$$|H(j\omega)| = K \cdot \frac{\text{零点到 } j\omega \text{ 的距离}}{\text{极点到 } j\omega \text{ 的距离}}$$想象一下复平面（s平面）：$j\omega$ 轴：是我们要考察的“跑道”。极点：通常在左半平面（为了稳定）。假设有一个极点 $p$ 在 $-\sigma$。目标：我们要放置一个零点 $z$，使得你在 $j\omega$ 轴上无论走到哪里，零点到你的距离永远等于极点到你的距离。怎么放？根据平面几何知识，只有当 $j\omega$ 轴是零点和极点连线的垂直平分线时，轴上任意一点到两端的距离才相等。因为 $j\omega$ 轴是垂直的，所以零点必须和极点关于 $j\omega$ 轴镜像对称。如果极点在 $-\sigma$（左），零点就必须在 $+\sigma$（右）。如果极点是复数 $-1+j$，零点就必须是 $+1+j$（实部相反，虚部相同）。3. 数学验证设单极点全通函数：$$H(s) = \frac{s - \sigma}{s + \sigma} \quad (\text{零点在 } +\sigma, \text{ 极点在 } -\sigma)$$令 $s = j\omega$ 求模：$$|H(j\omega)| = \left| \frac{j\omega - \sigma}{j\omega + \sigma} \right| = \frac{\sqrt{\omega^2 + (-\sigma)^2}}{\sqrt{\omega^2 + \sigma^2}} = 1$$结论：正是因为零极点关于虚轴对称，分子分母的模长才始终相等，从而实现“全通”。第二部分：为什么最小相位系统的零极点都在 $j\omega$ 轴左侧？1. 极点为什么在左侧？这比较简单。对于一个因果（Causal）的线性系统，要保证它是稳定（Stable）的，其极点必须全部位于 s 平面的左半平面（LHP）。如果极点在右边，系统响应会包含 $e^{at} (a>0)$，随着时间推移会爆炸式增长，不稳定。2. 零点为什么也要在左侧？这是“最小相位”定义的精髓。我们要从可逆性的角度来理解。定义：最小相位系统是指系统本身是因果稳定的，且其逆系统（Inverse System, $1/H(s)$）也是因果稳定的。推导：原系统 $H(s)$ 的零点，在求逆后变成了逆系统 $1/H(s)$ 的极点。为了让逆系统也稳定，逆系统的极点（也就是原系统的零点）必须也在左半平面。结论：所以最小相位系统的零点必须都在左半平面。3. 物理意义：为什么叫“最小相位”？（能量延迟视角）假设我们要设计一个滤波器，幅度响应已经定死了（比如 $|H(j\omega)|$ 确定了）。我们可以把零点放在左边，也可以把零点镜像到右边（这就变成非最小相位了）。这两种做法幅度是一模一样的（参考第一部分的全通原理），但相位不同。左半平面零点（最小相位）：能量集中在时间轴的开始部分。信号响应来得快，延迟小。右半平面零点（非最小相位）：能量被推迟了。信号响应会先压低再起来（甚至出现下冲），造成更大的群延迟（Group Delay）。总结对比：对于具有相同幅频响应的一组因果稳定系统：最小相位系统：零点全在左边。它的相位延迟（Phase Lag）最小，群延迟最小，能量最快到达。非最小相位系统：有零点在右边。它等效于一个“最小相位系统”串联了一个“全通系统”。全通系统虽然不改变幅度，但会叠加额外的相位延迟。一句话总结全通系统：为了让分子分母模长相互抵消（幅度恒为1），零极点必须关于虚轴镜像对称。最小相位系统：为了保证逆系统也稳定（或者说为了让信号延迟最小），零点必须和极点一样，乖乖待在左半平面。
 
+\newpage
 
- 什么是“留数求导法”？留数求导法（Residue Method with Derivatives），也常被称为重极点留数法，是拉普拉斯逆变换中处理**多重极点（Repeated Poles）**部分分式展开的终极工具。为什么需要它？当分母中出现 $(s-p)^n$ 这样的高阶项（比如 $s^3$）时：最高次项（如 $1/s^3$）可以通过简单的“遮盖法”直接求出。低次项（如 $1/s^2$ 和 $1/s$）如果用“遮盖法”直接代入极点，会出现分母为 0 的情况。如果用“通分系数比较法”，计算量大且容易出错。核心原理：泰勒级数展开本质上，我们是将“遮盖”后的剩余函数 $\Phi(s)$ 在极点处进行泰勒级数展开，各项系数正是我们要求的偏分式系数。�� 数学原理推导（直观理解）假设我们要展开的函数为 $F(s)$，它在 $s=p$ 处有一个 $n$ 重极点。形式如下：$$F(s) = \frac{N(s)}{(s-p)^n Q(s)}$$我们要把它展开成：$$F(s) = \frac{K_1}{s-p} + \frac{K_2}{(s-p)^2} + \dots + \frac{K_n}{(s-p)^n} + \dots (\text{其他项})$$第一步：构建核心函数 $\Phi(s)$我们把等式两边同时乘以 $(s-p)^n$，即“遮盖”掉分母中的重极点项：$$\Phi(s) = F(s) \cdot (s-p)^n = \frac{N(s)}{Q(s)}$$等式右边变成：$$\Phi(s) = K_n + K_{n-1}(s-p) + K_{n-2}(s-p)^2 + \dots + K_1(s-p)^{n-1} + (\text{其他项})(s-p)^n$$第二步：像剥洋葱一样求系数求 $K_n$（最高次项系数）：直接令 $s=p$。等式右边所有含 $(s-p)$ 的项全部变为 0，只剩下 $K_n$。$$K_n = \Phi(p)$$(这就是普通的遮盖法)求 $K_{n-1}$（次高次项系数）：对 $\Phi(s)$ 关于 $s$ 求一阶导数。常数 $K_n$ 消失， $K_{n-1}(s-p)$ 变成 $K_{n-1}$，后面的项仍含有 $(s-p)$。$$\Phi'(s) = 0 + K_{n-1} + 2K_{n-2}(s-p) + \dots$$令 $s=p$，得到：$$K_{n-1} = \Phi'(p)$$求 $K_{n-2}$（再次项系数）：对 $\Phi(s)$ 求二阶导数。$$\Phi''(s) = 2K_{n-2} + 3\cdot 2 K_{n-3}(s-p) + \dots$$令 $s=p$，得到 $\Phi''(p) = 2! \cdot K_{n-2}$。所以：$$K_{n-2} = \frac{1}{2!} \Phi''(p)$$
+% ==========================================
+% 第四部分：核心概念解析
+% ==========================================
+\section{几何法求频率响应}
+
+我们要分析的是系统函数 $H(s)$ 在虚轴 $s=j\omega$ 上的模值 $|H(j\omega)|$。
+
+\subsection{1. 几何直观}
+对于 $H(s)$ 中的每一个因子：
+\begin{itemize}
+    \item \textbf{零点 (Zero, $\circ$)}：代表分子。零点到 $j\omega$ 的距离越短，模值越小（拉低增益）。
+    \item \textbf{极点 (Pole, $\times$)}：代表分母。极点到 $j\omega$ 的距离越短，模值越大（顶高增益，产生峰值）。
+\end{itemize}
+
+\subsection{2. 核心公式}
+\begin{corebox}{幅频响应几何公式}
+    \[ |H(j\omega)| = K \cdot \frac{\text{所有零点到 } j\omega \text{ 的矢量长度之积}}{\text{所有极点到 } j\omega \text{ 的矢量长度之积}} \]
+\end{corebox}
+我们在 $j\omega$ 轴上从 $\omega=0$ 走到 $\omega=\infty$，观察这些“矢量长度”是如何变化的，就能画出幅频响应。
+
+\subsection{3. 解题步骤拆解 (针对例题 7-10)}
+我们依次分析图中的 (a), (b), (c) 三种情况。
+
+\begin{examplebox}{(a) 低通滤波器 (Low-Pass)}
+    \textbf{系统函数}：$H_1(s) = \frac{1}{(s+1)(s+3)}$
+    \begin{itemize}
+        \item \textbf{零极点分布}：零点无（或在无穷远处）；极点为实轴上的 $-1$ 和 $-3$。
+        \item \textbf{几何分析}：
+        \begin{itemize}
+            \item $\omega=0$ (直流)：极点矢量长度分别为 1 和 3。模值最大，为 $\frac{1}{1\times3} = \frac{1}{3}$。
+            \item $\omega \uparrow$ (频率增加)：极点到 $j\omega$ 的连线变长。
+            \item $\omega \to \infty$：分母中的长度无限变大，导致 $|H(j\omega)| \to 0$。
+        \end{itemize}
+        \item \textbf{结论}：低频大，高频小 $\Rightarrow$ 低通特性。
+    \end{itemize}
+\end{examplebox}
+
+\begin{examplebox}{(b) 带通滤波器 (Band-Pass)}
+    \textbf{系统函数}：$H_2(s) = \frac{s}{s^2+s+1}$
+    \begin{itemize}
+        \item \textbf{零极点分布}：原点 $0$ 有一个零点；共轭复极点 $-\frac{1}{2} \pm j\frac{\sqrt{3}}{2}$。
+        \item \textbf{几何分析}：
+        \begin{itemize}
+            \item $\omega=0$：踩在零点上，分子为0 $\Rightarrow$ 模值为0。
+            \item $\omega$ 接近极点虚部：当 $\omega \approx \frac{\sqrt{3}}{2}$ 时，距离极点非常近（分母极小），距离零点有一定长度。分母小意味着数值大 $\Rightarrow$ 出现峰值。
+            \item $\omega \to \infty$：分子随 $\omega$ 线性增长，分母随 $\omega^2$ 增长。模值趋向于0。
+        \end{itemize}
+        \item \textbf{结论}：两头低，中间高 $\Rightarrow$ 带通特性。
+    \end{itemize}
+\end{examplebox}
+
+\begin{examplebox}{(c) 高通滤波器 (High-Pass)}
+    \textbf{系统函数}：$H_3(s) = \frac{s^2}{(s+1)^2}$
+    \begin{itemize}
+        \item \textbf{零极点分布}：原点 $0$ 有二阶零点；$-1$ 处有二阶极点。
+        \item \textbf{几何分析}：
+        \begin{itemize}
+            \item $\omega=0$：踩在零点上，模值为0。
+            \item $\omega \to \infty$：零点到参考点距离 ($|\omega|$) 和极点到参考点距离 ($\sqrt{1+\omega^2}$) 几乎相等。极限比值 $\approx 1$。
+        \end{itemize}
+        \item \textbf{结论}：低频为0，高频通透 $\Rightarrow$ 高通特性。
+    \end{itemize}
+\end{examplebox}
+
+\section{全通系统与最小相位系统}
+
+\subsection{1. 为什么全通系统的零极点关于 $j\omega$ 轴对称？}
+
+\begin{itemize}
+    \item \textbf{定义}：全通系统（All-pass System）的幅度响应恒为常数。即 $|H(j\omega)| = C$。
+    \item \textbf{几何直观}：
+    我们在复平面上计算 $|H(j\omega)|$ 时，其实是在计算距离的比值：
+    \[ |H(j\omega)| = K \cdot \frac{\text{零点到 } j\omega \text{ 的距离}}{\text{极点到 } j\omega \text{ 的距离}} \]
+    要使得 $j\omega$ 轴（垂直平分线）上任意一点到零点和极点的距离相等，\textbf{零点必须和极点关于 $j\omega$ 轴镜像对称}。
+    \begin{itemize}
+        \item 如果极点在 $-\sigma$（左），零点就必须在 $+\sigma$（右）。
+        \item 如果极点是复数 $-1+j$，零点就必须是 $+1+j$。
+    \end{itemize}
+\end{itemize}
+
+\begin{corebox}{数学验证}
+    设单极点全通函数 $H(s) = \frac{s - \sigma}{s + \sigma}$ （零点 $+\sigma$，极点 $-\sigma$）。
+    令 $s = j\omega$ 求模：
+    \[ |H(j\omega)| = \left| \frac{j\omega - \sigma}{j\omega + \sigma} \right| = \frac{\sqrt{\omega^2 + (-\sigma)^2}}{\sqrt{\omega^2 + \sigma^2}} = 1 \]
+    \textbf{结论}：正是因为零极点关于虚轴对称，分子分母的模长才始终相等。
+\end{corebox}
+
+\subsection{2. 为什么最小相位系统的零极点都在 $j\omega$ 轴左侧？}
+
+\begin{itemize}
+    \item \textbf{极点在左侧}：为了保证因果系统的\textbf{稳定性}。
+    \item \textbf{零点在左侧}：为了保证\textbf{逆系统}（$1/H(s)$）也是稳定因果的。因为原系统的零点会变成逆系统的极点。
+    \item \textbf{物理意义（能量延迟视角）}：
+    \begin{itemize}
+        \item \textbf{最小相位系统}（零点在左）：能量集中在时间轴开始部分，相位延迟最小，群延迟最小。
+        \item \textbf{非最小相位系统}（有零点在右）：等效于“最小相位系统”串联一个“全通系统”。全通系统叠加了额外的相位延迟。
+    \end{itemize}
+\end{itemize}
+
+\section{留数求导法 (Residue Method with Derivatives)}
+
+\begin{introduction}[方法简介]
+    \item \textbf{留数求导法}（也称重极点留数法）是拉普拉斯逆变换中处理\textbf{多重极点}部分分式展开的终极工具。
+    \item 当分母出现 $(s-p)^n$ 时，低次项系数无法用简单的遮盖法直接求出，需使用此法。
+\end{introduction}
+
+\subsection{数学原理推导}
+
+假设 $F(s) = \frac{N(s)}{(s-p)^n Q(s)}$，展开形式为：
+\[ F(s) = \frac{K_1}{s-p} + \frac{K_2}{(s-p)^2} + \dots + \frac{K_n}{(s-p)^n} + \dots \]
+
+\begin{enumerate}
+    \item \textbf{第一步：构建核心函数 $\Phi(s)$}
+    将两边同时乘以 $(s-p)^n$，即“遮盖”掉重极点项：
+    \[ \Phi(s) = F(s) \cdot (s-p)^n = \frac{N(s)}{Q(s)} \]
+    此时右边展开式变为多项式形式：
+    \[ \Phi(s) = K_n + K_{n-1}(s-p) + K_{n-2}(s-p)^2 + \dots \]
+
+    \item \textbf{第二步：像剥洋葱一样求系数 (泰勒展开)}
+    \begin{itemize}
+        \item \textbf{求 $K_n$ (最高次项)}：令 $s=p$。
+        \[ K_n = \Phi(p) \]
+        \item \textbf{求 $K_{n-1}$ (次高次项)}：对 $\Phi(s)$ 求一阶导数后令 $s=p$。
+        \[ K_{n-1} = \Phi'(p) \]
+        \item \textbf{求 $K_{n-2}$ (再次项)}：对 $\Phi(s)$ 求二阶导数后令 $s=p$，除以 $2!$。
+        \[ K_{n-2} = \frac{1}{2!} \Phi''(p) \]
+    \end{itemize}
+\end{enumerate}
+
+\begin{corebox}{通用公式}
+    对于 $(s-p)^n$ 中的倒数第 $m$ 项系数（即对应的 $(s-p)^{n-m+1}$ 项系数）：
+    \[ K_{n-m} = \frac{1}{m!} \frac{d^m}{ds^m} [\Phi(s)] \Big|_{s=p} \]
+\end{corebox}

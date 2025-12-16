@@ -1,11 +1,114 @@
 \chapter{离散时间信号的傅里叶变换}
-离散傅里叶级数 (Discrete Fourier Series, DFS)
-第一部分：基本概念与合成公式（任何一个周期的离散信号，都可以分解成有限个复指数信号的加权和。）
-1. 周期信号的定义如果一个离散信号 $f[n]$ 满足 $f[n+N] = f[n]$，那么它是周期的，周期为 $N$。2. 基波与谐波基波频率：定义 $\Omega_0 = \frac{2\pi}{N}$。这代表信号中最低的频率成分。复指数信号：$e^{jk\Omega_0 n}$。$k$ 代表第几次谐波（频率是基波的 $k$ 倍）。
-3. 离散时间特有的性质（非常重要！）文中特别指出了离散信号与连续信号的一个巨大区别：频率的周期性。公式 (6.2.1) 证明了：$$e^{j(k+N)\Omega_0 n} = e^{jk\Omega_0 n}$$这意味着什么？这意味着频率 $k$ 和频率 $k+N$ 是完全一样的！在连续时间里，傅里叶级数需要从 $-\infty$ 加到 $+\infty$，因为高频谐波是无限的。在离散时间里，因为 $k$ 和 $k+N$ 重复，我们只需要 $N$ 个 不同的复指数信号（通常取 $k=0$ 到 $N-1$）就足够描述整个信号了。4. 合成公式 (Synthesis Equation)这就是公式 (6.2.2)，也叫逆变换：$$f[n] = \sum_{k=0}^{N-1} a_k e^{jk\Omega_0 n}$$
-物理意义：时域信号 $f[n]$ 是由 $N$ 个不同频率的复指数波叠加而成的。$a_k$：称为傅里叶系数（或频谱系数），它代表了第 $k$ 个频率成分在原信号中占了多大比重（幅度和相位）。
-分析公式 (Analysis Equation)这就是公式 (6.2.5) 和 (6.2.7)：$$a_k = \frac{1}{N} \sum_{n=0}^{N-1} f[n] e^{-jk\Omega_0 n}$$（注：原文中公式6.2.4是用 $m$ 表示的，6.2.5换回了习惯用的 $k$，本质一样。）物理意义：这是将时域信号 $f[n]$ 转换到频域。计算出的 $a_k$ 告诉我们在频率 $k\Omega_0$ 处信号的强度。求和范围：公式 (6.2.6) 和 (6.2.7) 补充说明，求和区间不一定要是 $0$ 到 $N-1$，只要是任意连续的 $N$ 个点（记作 $n=<N>$）都可以，因为信号是周期的。
-总结：DFS 对偶性 (Duality)看完这两页，你需要记住的一组核心关系是：时域 $f[n]$：是周期的，周期为 $N$。频域 $a_k$：也是周期的，周期为 $N$（因为 $e^{-j(k+N)\Omega_0 n} = e^{-jk\Omega_0 n}$）。
 
-离散时间周期信号（Discrete-Time Periodic Signal）的离散时间傅里叶变换（DTFT）**公式。
-1. 基础定义假设 $x[n]$ 是一个周期为 $N$ 的离散时间信号，即满足 $x[n] = x[n+N]$。根据离散傅里叶级数（DFS），我们可以将这个周期信号分解为复指数信号的加权和：$$x[n] = \sum_{k=0}^{N-1} a_k e^{j \frac{2\pi}{N} k n}$$其中：$N$ 是信号的周期。$a_k$ 是傅里叶级数系数（DFS系数）。$\frac{2\pi}{N}$ 是基波频率。注意：系数 $a_k$ 本身也是周期的，即 $a_k = a_{k+N}$。因此，虽然求和通常写为 $0$ 到 $N-1$，但我们在概念上可以认为 $k$ 覆盖所有整数，且 $a_k$ 会重复。2. 应用 DTFT 定义离散时间傅里叶变换（DTFT）的定义式为：$$X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} x[n] e^{-j\omega n}$$我们将步骤 1 中的 $x[n]$ 表达式代入 DTFT 定义式：$$X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} \left( \sum_{k=0}^{N-1} a_k e^{j \frac{2\pi}{N} k n} \right) e^{-j\omega n}$$3. 交换求和顺序根据线性性质，我们可以交换求和顺序，将 $a_k$ 提到前面：$$X(e^{j\omega}) = \sum_{k=0}^{N-1} a_k \left[ \sum_{n=-\infty}^{\infty} e^{j \frac{2\pi}{N} k n} \cdot e^{-j\omega n} \right]$$方括号内的部分就是复指数信号 $e^{j \omega_0 n}$ 的 DTFT，其中 $\omega_0 = \frac{2\pi}{N}k$。4. 复指数信号的 DTFT我们需要用到一个关键的变换对。对于离散时间复指数信号 $e^{j\omega_0 n}$，其 DTFT 是在频率 $\omega_0$ 及其 $2\pi$ 周期延拓处的冲激函数串：$$\text{DTFT}\{ e^{j\omega_0 n} \} = \sum_{r=-\infty}^{\infty} 2\pi \delta(\omega - \omega_0 - 2\pi r)$$将 $\omega_0 = \frac{2\pi}{N}k$ 代入上式，方括号内的部分变为：$$\sum_{r=-\infty}^{\infty} 2\pi \delta\left(\omega - \frac{2\pi}{N}k - 2\pi r\right)$$5. 整合与化简将步骤 4 的结果代回步骤 3 的方程中：$$X(e^{j\omega}) = \sum_{k=0}^{N-1} a_k \left[ \sum_{r=-\infty}^{\infty} 2\pi \delta\left(\omega - \left(\frac{2\pi}{N}k + 2\pi r\right)\right) \right]$$这里我们有一个双重求和：$k$ 从 $0$ 到 $N-1$（一个周期内的频率分量）。$r$ 从 $-\infty$ 到 $\infty$（频谱的 $2\pi$ 周期性复制）。我们可以观察 $\delta$ 函数中的频率位置：$\frac{2\pi}{N}(k + Nr)$。因为 $k$ 是在一个周期 $N$ 内变化的，而 $r$ 是任意整数，所以表达式 $k + Nr$ 实际上可以表示为任意整数。让我们定义一个新的整数索引 $m = k + Nr$。当 $k$ 遍历 $0$ 到 $N-1$ 且 $r$ 遍历 $-\infty$ 到 $\infty$ 时，$m$ 将遍历从 $-\infty$ 到 $\infty$ 的所有整数。同时，由于 DFS 系数 $a_k$ 是周期的（周期为 $N$），即 $a_k = a_{k+Nr} = a_m$。因此，我们可以将双重求和合并为一个从 $-\infty$ 到 $\infty$ 的单一求和，并将索引变量重新命名为 $k$（对应图片中的公式）：$$X(e^{j\omega}) = \sum_{k=-\infty}^{\infty} 2\pi a_k \delta\left(\omega - \frac{2\pi}{N}k\right)$$结论这就是图片中公式的由来。它物理意义是：周期信号的频谱是离散的：只在基波频率 $\frac{2\pi}{N}$ 的整数倍处有值。能量集中在冲激上：在这些频率点上，频谱表现为强度为 $2\pi a_k$ 的冲激函数（Dirac delta function）。
+% ==========================================
+% 第一部分：离散傅里叶级数 (DFS)
+% ==========================================
+\section{离散傅里叶级数 (Discrete Fourier Series, DFS)}
+
+\begin{introduction}[基本概念]
+    任何一个周期的离散信号，都可以分解成有限个复指数信号的加权和。
+\end{introduction}
+
+\subsection{1. 周期信号的定义}
+如果一个离散信号 $f[n]$ 满足 $f[n+N] = f[n]$，那么它是周期的，周期为 $N$。
+
+\subsection{2. 基波与谐波}
+\begin{itemize}
+    \item \textbf{基波频率}：定义 $\Omega_0 = \frac{2\pi}{N}$。这代表信号中最低的频率成分。
+    \item \textbf{复指数信号}：$e^{jk\Omega_0 n}$。$k$ 代表第几次谐波（频率是基波的 $k$ 倍）。
+\end{itemize}
+
+\subsection{3. 离散时间特有的性质（非常重要！）}
+离散信号与连续信号的一个巨大区别在于\textbf{频率的周期性}。公式证明了：
+\[ e^{j(k+N)\Omega_0 n} = e^{jk\Omega_0 n} \]
+\textbf{这意味着什么？}
+这意味着频率 $k$ 和频率 $k+N$ 是完全一样的！
+\begin{itemize}
+    \item 在\textbf{连续时间}里，傅里叶级数需要从 $-\infty$ 加到 $+\infty$，因为高频谐波是无限的。
+    \item 在\textbf{离散时间}里，因为 $k$ 和 $k+N$ 重复，我们只需要 \textbf{$N$ 个} 不同的复指数信号（通常取 $k=0$ 到 $N-1$）就足够描述整个信号了。
+\end{itemize}
+
+\subsection{4. DFS 核心公式}
+
+\begin{corebox}{合成公式 (Synthesis Equation / 逆变换)}
+    \[ f[n] = \sum_{k=0}^{N-1} a_k e^{jk\Omega_0 n} \]
+    \textbf{物理意义}：时域信号 $f[n]$ 是由 $N$ 个不同频率的复指数波叠加而成的。
+    \\ \textbf{$a_k$}：称为傅里叶系数（或频谱系数），它代表了第 $k$ 个频率成分在原信号中占了多大比重（幅度和相位）。
+\end{corebox}
+
+\begin{corebox}{分析公式 (Analysis Equation)}
+    \[ a_k = \frac{1}{N} \sum_{n=0}^{N-1} f[n] e^{-jk\Omega_0 n} \]
+    \textbf{物理意义}：这是将时域信号 $f[n]$ 转换到频域。计算出的 $a_k$ 告诉我们在频率 $k\Omega_0$ 处信号的强度。
+\end{corebox}
+
+\begin{note}
+    \textbf{求和范围}：求和区间不一定要是 $0$ 到 $N-1$，只要是任意连续的 $N$ 个点（记作 $n=<N>$）都可以，因为信号是周期的。
+\end{note}
+
+\subsection{5. 总结：DFS 对偶性 (Duality)}
+看完这两页，你需要记住的一组核心关系是：
+\begin{itemize}
+    \item \textbf{时域 $f[n]$}：是周期的，周期为 $N$。
+    \item \textbf{频域 $a_k$}：也是周期的，周期为 $N$（因为 $e^{-j(k+N)\Omega_0 n} = e^{-jk\Omega_0 n}$）。
+\end{itemize}
+
+\newpage
+
+% ==========================================
+% 第二部分：离散时间周期信号的 DTFT
+% ==========================================
+\section{离散时间周期信号的 DTFT}
+
+本节推导离散时间周期信号（Discrete-Time Periodic Signal）的离散时间傅里叶变换（DTFT）公式。
+
+\subsection{1. 基础定义}
+假设 $x[n]$ 是一个周期为 $N$ 的离散时间信号，即满足 $x[n] = x[n+N]$。根据离散傅里叶级数（DFS），我们可以将这个周期信号分解为复指数信号的加权和：
+\[ x[n] = \sum_{k=0}^{N-1} a_k e^{j \frac{2\pi}{N} k n} \]
+其中：
+\begin{itemize}
+    \item $N$ 是信号的周期。
+    \item $a_k$ 是傅里叶级数系数（DFS系数）。
+    \item $\frac{2\pi}{N}$ 是基波频率。
+\end{itemize}
+\small{注意：系数 $a_k$ 本身也是周期的，即 $a_k = a_{k+N}$。因此，虽然求和通常写为 $0$ 到 $N-1$，但我们在概念上可以认为 $k$ 覆盖所有整数，且 $a_k$ 会重复。}
+
+\subsection{2. 推导过程}
+
+\paragraph{Step 1: 应用 DTFT 定义}
+离散时间傅里叶变换（DTFT）的定义式为：
+\[ X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} x[n] e^{-j\omega n} \]
+我们将 $x[n]$ 的 DFS 表达式代入 DTFT 定义式：
+\[ X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} \left( \sum_{k=0}^{N-1} a_k e^{j \frac{2\pi}{N} k n} \right) e^{-j\omega n} \]
+
+\paragraph{Step 2: 交换求和顺序}
+根据线性性质，我们可以交换求和顺序，将 $a_k$ 提到前面：
+\[ X(e^{j\omega}) = \sum_{k=0}^{N-1} a_k \left[ \sum_{n=-\infty}^{\infty} e^{j \frac{2\pi}{N} k n} \cdot e^{-j\omega n} \right] \]
+方括号内的部分就是复指数信号 $e^{j \omega_0 n}$ 的 DTFT，其中 $\omega_0 = \frac{2\pi}{N}k$。
+
+\paragraph{Step 3: 利用复指数信号的 DTFT 变换对}
+对于离散时间复指数信号 $e^{j\omega_0 n}$，其 DTFT 是在频率 $\omega_0$ 及其 $2\pi$ 周期延拓处的冲激函数串：
+\[ \text{DTFT}\{ e^{j\omega_0 n} \} = \sum_{r=-\infty}^{\infty} 2\pi \delta(\omega - \omega_0 - 2\pi r) \]
+将 $\omega_0 = \frac{2\pi}{N}k$ 代入上式，方括号内的部分变为：
+\[ \sum_{r=-\infty}^{\infty} 2\pi \delta\left(\omega - \frac{2\pi}{N}k - 2\pi r\right) \]
+
+\paragraph{Step 4: 整合与化简}
+将 Step 3 的结果代回方程中：
+\[ X(e^{j\omega}) = \sum_{k=0}^{N-1} a_k \left[ \sum_{r=-\infty}^{\infty} 2\pi \delta\left(\omega - \left(\frac{2\pi}{N}k + 2\pi r\right)\right) \right] \]
+\textbf{关键变换}：这是一个双重求和。
+\begin{itemize}
+    \item $k$ 在 $[0, N-1]$ 内变化。
+    \item $r$ 在 $(-\infty, \infty)$ 内变化。
+\end{itemize}
+观察 $\delta$ 函数中的频率位置 $\frac{2\pi}{N}(k + Nr)$。令 $m = k + Nr$，当 $k$ 和 $r$ 遍历各自范围时，$m$ 遍历所有整数。又因为 $a_k$ 是周期的 ($a_k = a_{k+Nr}$)，我们可以合并双重求和为一个单一求和：
+
+\subsection{3. 最终结论}
+\begin{corebox}{周期信号的 DTFT 公式}
+    \[ X(e^{j\omega}) = \sum_{k=-\infty}^{\infty} 2\pi a_k \delta\left(\omega - \frac{2\pi}{N}k\right) \]
+\end{corebox}
+\textbf{物理意义}：
+\begin{enumerate}
+    \item \textbf{频谱离散}：只在基波频率 $\frac{2\pi}{N}$ 的整数倍处有值。
+    \item \textbf{能量集中}：在这些频率点上，频谱表现为强度为 $2\pi a_k$ 的冲激函数（Dirac delta function）。
+\end{enumerate}
+5. 直流信号信号： $x[n] = 1$ （对所有 $n$）证明：这是一个周期性的功率信号，其变换包含冲激函数。我们知道 $\delta[n]$ 的反变换是 $1/2\pi \int_{-\pi}^{\pi} 1 \cdot e^{j\Omega n} d\Omega$。对于频域中的周期冲激串 $X(\Omega) = 2\pi \sum_{l=-\infty}^{\infty} \delta(\Omega - 2l\pi)$，我们求其 DTFT 反变换（IDTFT）：$$x[n] = \frac{1}{2\pi} \int_{-\pi}^{\pi} [2\pi \sum_{l=-\infty}^{\infty} \delta(\Omega - 2l\pi)] e^{j\Omega n} d\Omega$$在 $(-\pi, \pi]$ 区间内，只有 $l=0$ 的项 $\delta(\Omega)$ 有效：$$x[n] = \frac{1}{2\pi} \int_{-\pi}^{\pi} 2\pi \delta(\Omega) e^{j\Omega n} d\Omega = \int_{-\pi}^{\pi} \delta(\Omega) \cdot 1 d\Omega = 1$$因为 IDTFT 得到 $1$，所以 $1$ 的 DTFT 是周期冲激串。$$X(\Omega) = 2\pi \sum_{l=-\infty}^{\infty} \delta(\Omega - 2l\pi)$$证毕。
+斜坡加权指数信号： $(n+1)a^n u[n], \quad |a|<1$证明：利用时域卷积定理：$y[n] = x[n] * h[n] \leftrightarrow Y(\Omega) = X(\Omega)H(\Omega)$。观察信号形式，令 $x[n] = a^n u[n]$。计算 $x[n] * x[n]$：$$(a^n u[n]) * (a^n u[n]) = \sum_{k=-\infty}^{\infty} a^k u[k] a^{n-k} u[n-k]$$非零区间为 $k \ge 0$ 且 $n-k \ge 0$ (即 $k \le n$)。若 $n<0$，结果为0。对于 $n \ge 0$：$$\sum_{k=0}^{n} a^k a^{n-k} = \sum_{k=0}^{n} a^n = a^n \sum_{k=0}^{n} 1 = a^n (n+1)$$所以 $(n+1)a^n u[n]$ 正好是 $a^n u[n]$ 自卷积的结果。其频域变换即为 $a^n u[n]$ 变换的平方：$$X(\Omega) = \left( \frac{1}{1 - ae^{-j\Omega}} \right)^2$$证毕。12. 高阶加权指数信号： $\frac{(n+r-1)!}{n!(r-1)!} a^n u[n]$证明：这是序号 11 的推广。序号 1 的变换是 $H(\Omega) = (1-ae^{-j\Omega})^{-1}$。序号 11 的变换是 $H^2(\Omega)$，对应 2 个 $a^n u[n]$ 卷积。该通项公式实际上是 $r$ 个 $a^n u[n]$ 连续卷积的结果（组合数学中的重复组合数）。由卷积定理，频域为：$$X(\Omega) = [ \text{DTFT}\{a^n u[n]\} ]^r = \frac{1}{(1 - ae^{-j\Omega})^r}$$证毕。13. 周期冲激串信号： $\sum_{k=-\infty}^{\infty} \delta[n - kN]$证明：这是一个周期为 $N$ 的信号。根据泊松求和公式（Poisson Summation Formula），或者将其视为周期信号展开为离散傅里叶级数（DFS）。令 $x[n] = \sum_k \delta[n - kN]$。其傅里叶级数系数 $a_k$ 为：$$a_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n] e^{-jk(2\pi/N)n} = \frac{1}{N} \sum_{n=0}^{N-1} \delta[n] e^{-jk(2\pi/N)n} = \frac{1}{N} \cdot 1 = \frac{1}{N}$$对于周期信号，其 DTFT 是在谐波频率 $\frac{2\pi k}{N}$ 处的冲激串，强度为 $2\pi a_k$。$$X(\Omega) = \sum_{k=-\infty}^{\infty} 2\pi a_k \delta(\Omega - \frac{2\pi k}{N}) = \frac{2\pi}{N} \sum_{k=-\infty}^{\infty} \delta(\Omega - \frac{2k\pi}{N})$$证毕。14. 一般周期信号信号： 周期为 $N$ 的周期信号证明：任何周期为 $N$ 的离散信号 $\tilde{x}[n]$ 都可以展开为傅里叶级数：$$\tilde{x}[n] = \sum_{k=0}^{N-1} a_k e^{j k \frac{2\pi}{N} n}$$其中 $a_k$ 是傅里叶系数。根据线性性质和复指数信号的变换（序号6）：我们知道 $e^{j\Omega_0 n} \leftrightarrow 2\pi \sum_l \delta(\Omega - \Omega_0 - 2l\pi)$。这里 $\Omega_0 = k \frac{2\pi}{N}$。$$X(\Omega) = \sum_{k=0}^{N-1} a_k \left[ 2\pi \sum_{l=-\infty}^{\infty} \delta(\Omega - \frac{2\pi k}{N} - 2\pi l) \right]$$由于 $k$ 在 $0$ 到 $N-1$ 遍历，而 $l$ 在 $-\infty$ 到 $\infty$ 遍历，且 $\frac{2\pi k}{N} + 2\pi l = \frac{2\pi (k + lN)}{N}$。这实际上覆盖了所有 $\frac{2\pi}{N}$ 的整数倍。通常可以简写为求和覆盖所有 $k$（将 $l$ 合并进 $k$ 的范围，或者如表中所示保持 $l$ 的周期性结构，表中公式实际上省略了 $l$ 的求和符号，意指在整个频域轴上重复）：表中的写法是 $2\pi \sum_{k=-\infty}^{\infty} a_k \delta(\Omega - \frac{2k\pi}{N})$。注意：这里的 $a_k$ 是周期为 $N$ 的系数序列（即 $a_{k+N} = a_k$），所以这个求和式正确地表示了所有谐波分量的冲激函数。证毕。
